@@ -16,7 +16,6 @@ float MAX_VELOCITY;
 int MY_PORT;
 int NI_PORT;
 int QUEUE_LENGTH;
-std::string STELLGROESSEN_TOPIC;
 double time_start;
 
 //Network.
@@ -65,7 +64,7 @@ int main(int argc, char** argv){
   if (sendto(sock, buffer_out, sizeof(buffer_out), 0, (struct sockaddr*) &si_NI, slen) == -1) 
         printErrorAndFinish("sending vcu launching");
   //Listening for and sending data.
-  while(ros::Time::now().toSec()-time_start<240 && ros::ok()){
+  while(ros::Time::now().toSec()-time_start<730/0.85 && ros::ok()){
     //Sending.
     ros::spinOnce();
   }
@@ -115,12 +114,12 @@ void printErrorAndFinish(std::string reason){
 }
 
 void setUpRosInterface(ros::NodeHandle* node){
-  stellgroessen_should_sub = node->subscribe(STELLGROESSEN_TOPIC, 10, stellgroessenCallback);
+  stellgroessen_should_sub = node->subscribe("stellgroessen_safe", 10, stellgroessenCallback);
 }
 
 void stellgroessenCallback(const ackermann_msgs::AckermannDrive::ConstPtr& msg){
   //Sending should velocity [m/s].
-  double vel_should = msg->speed*2.2;
+  double vel_should = msg->speed;
   std::string vel_string = "vs:" + convertDoubleToString(vel_should);
   const char *buffer_out_vel = vel_string.c_str();
   if (sendto(sock, buffer_out_vel, sizeof(buffer_out_vel), 0, (struct sockaddr*) &si_NI, slen) == -1) 

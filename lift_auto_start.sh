@@ -1,6 +1,8 @@
 cd /home/arcsystem/catkin_ws
-xdg-open /home/arcsystem/GA1_short.mp4
-sleep 8.0
-roslaunch arc_interface lift_presentation.launch
-killall totem
-roslaunch arc_interface lift_presentation_laser.launch
+for iter in $(seq 1 20); do
+	xdg-open /home/arcsystem/Desktop/Rollout/ROutMOVIE.mp4
+	sleep 1.0
+	roslaunch arc_presentation lift_presentation.launch
+	sleep 10.0
+	killall totem
+done
